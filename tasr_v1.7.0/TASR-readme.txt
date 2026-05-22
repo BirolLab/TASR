@@ -1,81 +1,49 @@
-[![Release](https://img.shields.io/github/release/warrenlr/TASR.svg)](https://github.com/warrenlr/TASR/releases)
-[![Downloads](https://img.shields.io/github/downloads/warrenlr/TASR/total?logo=github)](https://github.com/warrenlr/TASR/releases/download/v1.6.2/TASR-1.6.2.tar.gz)
-[![Issues](https://img.shields.io/github/issues/warrenlr/TASR.svg)](https://github.com/warrenlr/TASR/issues)
-[![link](https://img.shields.io/badge/TASR-manuscript-brightgreen)](https://doi.org/10.1371/journal.pone.0019816)
+Targeted Assembly of Sequence Reads (TASR)
 
-![Logo](https://github.com/warrenlr/tasr/blob/master/tasr-logo.png)
-# TASR
-
-## Targeted Assembly of Sequence Reads (TASR)
-## TASR v1.7.0 Rene Warren, 2010-present
-
-### Contents
---------
-1. [Description](#des)
-2. [What's new](#new)
-3. [Implementation and requirements](#imp)
-4. [Installation](#install)
-5. [Documentation](#doc)
-6. [Citing TASR](#citing)
-7. [Running TASR](#run)
-8. [Test data](#test)
-9. [Algorithm](#algo)
-10. [TASR-Bloom](#tasrbloom)
-11. [Input](#input)
-12. [Tips for choosing target sequences](#tips)
-13. [Output](#output)
-14. [License](#license)
---------
+TASR v1.7.0 Rene Warren, 2010-present
+email: rwarren [at] bcgsc [dot] ca
 
 
-### Description <a name=des></a>
------------
-
-Targeted Assembly of Sequence Reads (TASR) using the SSAKE assembly engine.
-TASR is a genomics application that allows hypothesis-based interrogation of genomic regions (sequence targets) of interest.
-*It only considers reads for assembly that have overlap potential to input target sequences.
-TASR is a tool for targeted sequence assembly
-
-What's new in version 1.7.0? <a name=new></a>
+What's new in version 1.7.0?
 ----------------------------
 
 Fixed non-deterministic behaviour exposed by Perl 5.26 via randomized hash traversal, Documented here: https://github.com/BirolLab/SSAKE/issues/13
 This is an in-code fix of the bug.
 Due to the hash sorting fix, 1.7.0 takes a slight performance hit over 1.6.2. TASR can be invoked as instructed i.e. ./TASR in the README
-Note, users who have v1.6.2 and earlier are encouraged to run TASR like so: SERVERx>PERL_HASH_SEED=0 PERL_PERTURB_KEYS=0 ./TASR 
+Note, users who have v1.6.2 and earlier are encouraged to run TASR like so: SERVERx>PERL_HASH_SEED=0 PERL_PERTURB_KEYS=0 ../TASR
 
-### What's new in version 1.6.2?
+What's new in version 1.6.2?
 ----------------------------
 
 Minor bug fix that prevented TASR from running in reference-guided mode (-i 0). Thanks to Matthew Hobbs for reporting it.
 Changed test to explicitely set -i to 1 or 0, for testing purposes (default is -i 1 as per v1.6.1)
 
 
-### What's new in version 1.6.1?
+What's new in version 1.6.1?
 ----------------------------
 
-1. Bloom filter functionality to exclude k-mers from your sequence target space (TASR-Bloom)
+1) Bloom filter functionality to exclude k-mers from your sequence target space (TASR-Bloom)
 TASR and TASR-Bloom:
-2. 4-base encoding of the first 16 bases of each read while populating a 4-nodes (16/4) prefix tree.
-3. The new (and required) coverage depth threshold -w option, gives users more control over the assembly, focusing on higher-depth contigs and ignoring short, low-depth contigs comprised of NGS reads having errors, contaminating reads or any other (perhaps unwanted) sequences.
-4. Improvements to read recruitement from sorted-by-name bams, recruiting whole read pairs when at least one read has a target seed k-mer match. This has the potential to extend the reconstructed contigs by 2X the library fragment size (upstream and downstream) of the target sequence.
-5. Support for compressed reads file (zip/gz)
-6. The de novo assembly mode (-i 1) is now the default mode
+2) 4-base encoding of the first 16 bases of each read while populating a 4-nodes (16/4) prefix tree.
+3) The new (and required) coverage depth threshold -w option, gives users more control over the assembly, focusing on higher-depth contigs and ignoring short, low-depth contigs comprised of NGS reads having errors, contaminating reads or any other (perhaps unwanted) sequences.
+4) Improvements to read recruitement from sorted-by-name bams, recruiting whole read pairs when at least one read has a target seed k-mer match. This has the potential to extend the reconstructed contigs by 2X the library fragment size (upstream and downstream) of the target sequence.
+5) Support for compressed reads file (zip/gz)
+6) The de novo assembly mode (-i 1) is now the default mode
 
 
-### What's new in version 1.5.1?
+What's new in version 1.5.1?
 ----------------------------
 
 fixed TASR for Perl >= 5.16.0, where deprecated getopts.pl has been removed. Thanks to Nicola Soranzo for sending the fix.
 
 
-### What's new in version 1.5?
+What's new in version 1.5?
 --------------------------
 
 TASR v1.5 no longer constrains the use of 15-character words derived from a target sequence for interrogating candidate reads.  User-defined target word length values are now passed to the algorithm using the -k option.  Using larger -k values should help speed up the search when using long sequence reads, since it will restrict the sequence space accordingly.  Note: whereas specificity, speed and RAM usage may increase with k, it may yield more sparse/fragmented assemblies.  Proper experimentation with various -k values are warranted.
 
 
-### What's new in version 1.4?
+What's new in version 1.4?
 --------------------------
 
 Ability to interrogate reads in bam files
@@ -83,13 +51,13 @@ Ability to interrogate reads in bam files
 The -a option is used to specify the location of samtools in your system. If .bam/.BAM are specified in the file-of-filename (FOF) supplied with the -f option, the executable specified under -a will interrogate any reads in .bam files that passed QC. 
 
 
-### What's new in version 1.3?
+What's new in version 1.3?
 --------------------------
 
 Support for sequence target-independent de novo assemblies
 
 The -i option instructs TASR to use target sequences for the sole purpose of recruiting sequence reads.  If set (-i 1) the target sequences will not seed de novo assemblies and this task will be achieved by recruited reads in a target-independent fashion instead. This has the advantage of allowing the user to provide, as a target, a large reference sequence (-s) without a priori knowledge of variant bases or other structural variants.
-<pre>
+
 e.g. 
 
 ORF REFERENCE:
@@ -121,39 +89,47 @@ Contig created:
 XXXOXXXXXX
 
 Where "O" represents a variant base 
-</pre>
 
-### What's new in version 1.2?
+
+What's new in version 1.2?
 --------------------------
 
 The -f option input reads via a file of filenames (fof).  The latter lists any fasta/fastq sequence files you wish to input.
 One file per line must be specified, full path to your file(s) is recommended.
 
 
-### Implementation and requirements <a name=imp></a>
+Description
+-----------
+
+Targeted Assembly of Sequence Reads (TASR) using the SSAKE assembly engine.
+TASR is a genomics application that allows hypothesis-based interrogation of genomic regions (sequence targets) of interest.
+*It only considers reads for assembly that have overlap potential to input target sequences. 
+
+
+Implementation and requirements
 -------------------------------
 
 TASR is implemented in PERL and runs on any platform where PERL is installed 
 
 
-### Installation <a name=install></a>
+Install
 -------
 
 Download the .tar.gz, gunzip and extract the files on your system using:
-<pre>
+
 gunzip tasr_v1-6.tar.gz
 tar -xvf tasr_v1-6.tar
-</pre>
+
 The Bloom::Faster PERL library was built against various version of PERL
-<pre>
+
 ./lib/Bloom-Faster-1.7/
 bloom5-10-0
 bloom5-16-0
 bloom5-16-3
 bloom5-18-1
-</pre>
+
 To re-build against YOUR PERL version, follow these easy steps:
-<pre>
+
 1. cd ./lib/Bloom-Faster-1.7
 2. /gsc/software/linux-x86_64/perl-5.10.0/bin/perl Makefile.PL
 PREFIX=./bloom5-10-0
@@ -162,41 +138,35 @@ PREFIX=./bloom5-10-0
 4. make install
 5. change line 236 in TASR-Bloom to reflect the location of the Bloom library
 5. test: /gsc/software/linux-x86_64/perl-5.10.0/bin/perl ../../TASR-Bloom
-</pre>
+
 Change the shebang line of TASR to point to the version of PERL installed on your system and you're good to go.
 
  
-### Documentation <a name=doc></a>
+Documentation
 -------------
 
 Refer to the TASR.readme file on how to run SSAKE and the SSAKE web site for information about the software and its performance 
+www.bcgsc.ca/bioinfo/software/tasr
 
 Questions or comments?  We would love to hear from you!
 
 
-### Citing TASR <a name=citing></a>
+Citing TASR
 -----------
 
-Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/TASR.svg)](https://github.com/warrenlr/TASR/stargazers) and for using, developing and promoting this free software!
-
+Thank you for using, developing and promoting this free software.
 If you use TASR or SSAKE for you research, please cite:
 
-<pre>
 Warren RL, Holt RA, 2011 Targeted Assembly of Short Sequence Reads. PLoS ONE 6(5): e19816. doi:10.1371/journal.pone.0019816 
-</pre>
-[![link](https://img.shields.io/badge/TASR-manuscript-brightgreen)](https://doi.org/10.1371/journal.pone.0019816)
-<pre>
 Warren RL, Sutton GG, Jones SJM, Holt RA.  2007.  Assembling millions of short DNA sequences using SSAKE.  Bioinformatics. 23(4):500-501
-</pre>
-[![link](https://img.shields.io/badge/SSAKE-manuscript-brightgreen)](https://doi.org/10.1093/bioinformatics/btl629)
 
 
-### Running TASR <a name=run></a>
+Running TASR
 ------------
-<pre>
+
 e.g. ../TASR -s targets.fa -f foobar.fof -m 15 -c 1
 
-Usage: PERL_HASH_SEED=0 PERL_PERTURB_KEYS=0 ./TASR [v1.6.2] --or-- ./TASR [v1.7.0]
+Usage: ./TASR [v1.6.2]
 -f  File of filenames (FOF) corresponding to .fasta, .fastq or .bam files with NGS reads (bz2/gz/zip support) to interrogate
  -a Full path to samtools (required only if .bam files listed in FOF)
 -s  Fasta file containing sequences to use as targets exclusively
@@ -215,26 +185,25 @@ Usage: PERL_HASH_SEED=0 PERL_PERTURB_KEYS=0 ./TASR [v1.6.2] --or-- ./TASR [v1.7.
 -b  Base name for your output files (optional)
 -v  Runs in verbose mode (-v 1 = yes, default = no, optional)
 
-</pre>
 
-### Test data <a name=test></a>
+Test data
 ---------
 
 Execute "runme.sh"
 -or-
 Run:
-<pre>
+
 A. Go to ./test
 B. Get ~4M RNA seq reads from a prostate adenocarcinoma sample:
-wget https://www.bcgsc.ca/downloads/supplementary/SSAKE/SRR066437.fastq.bz2
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/SRR066437.fastq.bz2
 C. Decompress reads file:
 >bunzip2 SRR066437.fastq.bz2
 D. Notice the file of filename (fof) foobar.fof, which lists SRR066437.fastq
 E. Run TASR, quality-clip mode:
 >../TASR -s targets.fa -f foobar.fof -m 15 -c 1 -u 1
-</pre>
 
-### Algorithm <a name=algo></a>
+
+How it works
 ------------
 
 If the -s option is set and points to a valid fasta file, the DNA sequences comprised in that file will populate the hash table and be used exclusively as seeds to nucleate contig extensions (they will not be utilized to build the prefix tree).  In that scheme, every unique sequence target will be used in turn to nucleate an extension, using short reads found in the tree (specified in -f).  This feature might be useful if you already have characterized sequences & want to increase their length using short reads.  That said, since the short reads are not used as seeds when -s is set, they will not cluster to one another WITHOUT a target sequence file. 
@@ -244,7 +213,7 @@ The .singlets will ONLY list sequence targets for which there are no overlapping
 DNA sequence reads in a fastq or fasta format are fed into into the algorithm via a file of filenames using the ‚ -f option.  DNA sequence targets, used to interrogate all reads are supplied as a multi fasta file using the ‚-s option.  Sequence targets are read first. From each target, every possible 15-character word (or user-defined -k) from the plus and minus strands is extracted and stored in a hash table. As the bulk of the NGS sequences are read, quality trimming is possible at run-time, provided that a fastq file is supplied, concurrently with the ‚-c 1 option. In SSAKE, the first 15bp of each read and of its reverse complement are unconditionally used as an index to fill the prefix tree.  In TASR, only those with matching 15-mer (-k mer) in the target sequence set are considered, thus limiting the sequence space to that of the target sequence. Low-complexity and large DNA sequence target will draw in more reads, which will impact the performance of TASR.  
 
 
-### TASR-Bloom <a name=tasrbloom></a>
+TASR-Bloom
 ----------
 
 TASR-Bloom uses a Bloom filter supplied with the -l option, to eliminate target k-mers for recruiting reads.
@@ -252,7 +221,7 @@ This could be useful for removing low-complexity or repeat k-mers in the supplie
 The Bloom filter must be built with the ./writeBloom.pl utility in the ./tools folder and the k-mer length must match that supplied (-k).
 
 
-### Input <a name=input></a>
+Input sequences
 ---------------
 
 -f file of filenames corresponding to fasta or fastq files
@@ -260,7 +229,6 @@ The Bloom filter must be built with the ./writeBloom.pl utility in the ./tools f
 
 If lower caps are used in the target sequence, pileup will report the lower case in the reference base column (column 2). This is convenient for observing how many reads (along with strand, quality) align over a coordinate of interest.
 
-<pre>
 e.g. (sequence targets file)
 >dryEarwax-A
 CTCACCAAGTCTGCCACTTACTGGCCaGAGTACACTGGCAATGCAGAAGCAG
@@ -274,12 +242,12 @@ CTCACCAAGTCTGCCACTTACTGGCCtGAGTACACTGGCAATGCAGAAGCAG
 AGTGAGGAAAACACGGAGTTGATGCAcAAGCCCCAACATCCAACCTCGACTC
 >blackHair-G
 AGTGAGGAAAACACGGAGTTGATGCAgAAGCCCCAACATCCAACCTCGACTC
-</pre>
+
 -Reads containing ambiguous bases "." and characters other than ACGT will be ignored entirely
 -Spaces in fasta file are NOT permitted and will either not be considered or result in execution failure
 
 
-### Tips for choosing target sequences <a name=tips></a>
+Tips for choosing target sequences
 ----------------------------------
 
 The length and sequence complexity of a target will have tremendous influence on the outcome of the assembly. Of course, depending on your application (SNV search, confirming SNPs, detecting fusion transcripts), the length & complexity may or may not matter.
@@ -290,32 +258,27 @@ For SNV/SNP detection, always provide a target sequence with the variant of inte
 Placing the base under scrutiny in the middle of the sequence is wise, as it will ensure maximum read coverage.
 Also, we recommend that the target sequence be at least the length of the shortest read supplied (-f), and no longer than twice the read length.
 Given a target sequence length (T) and read length (R), then: 
-<pre>
   R <= T < 2*(R-1)
-</pre>
 
 The same principles can be applied for detecting a translocation or a fusion transcript, although usually less critical, esp. for the latter where depth of coverage is usually not limiting. 
 
 
-### Output <a name=output></a>
+Output files
 ------------
 
-Output file|Description
----|---
-.contigs         | fasta file; All sequence contigs
-.log             | text file; Logs execution time / errors / pairing stats (if -p is set to 1)
-.singlets        | fasta file; Unassembled sequence targets
-.readposition    | this is a text file listing all whole (fully embedded) reads, start and end coordinate onto the contig (in this order).  For reads aligning on the minus strand, end coordinate is < start coordinate
-.coverage.csv    | this is a comma separated values file showing the base coverage at every position for any given contig 
-.pileup          | produces a modified pileup output (see below)
+.contigs         :: fasta file; All sequence contigs
+.log             :: text file; Logs execution time / errors / pairing stats (if -p is set to 1)
+.singlets        :: fasta file; Unassembled sequence targets
+.readposition    :: this is a text file listing all whole (fully embedded) reads, start and end coordinate onto the contig (in this order).  For reads aligning on the minus strand, end coordinate is < start coordinate
+.coverage.csv    :: this is a comma separated values file showing the base coverage at every position for any given contig 
+.pileup          :: produces a modified pileup output (see below)
 
 
-#### Understanding the .contigs fasta header
+Understanding the .contigs fasta header
 ---------------------------------------
-<pre>
+
 e.g.
 >TMPRSS2|size52|read193|cov92.79
-</pre>
 
 target name (from target file)= TMPRSS2
 size (G) = 52 nt
@@ -323,23 +286,23 @@ number of reads (N) = 193
 cov [coverage] (C) = 92.79
 
 the coverage (C) is calculated using the total number (T) of consensus bases [sum(L)] provided by the assembled sequences divided by the contig size:
-<pre>
-C = T / G
-</pre>
 
-#### Understanding the .coverage.csv file
+C = T / G
+
+
+Understanding the .coverage.csv file
 ------------------------------------
-<pre>
+
 e.g.
 >contig1|size60000|read74001|cov37.00
 12,12,13,13,13,14,14,15,16,16,20,21,22,23,25,26,27,28,27 ...
-</pre>
+
 Each number represents the number of reads covering that base at that position.
 
 
-#### Understanding the .readposition file
+Understanding the .readposition file
 ------------------------------------
-<pre>
+
 e.g.
 >contig2|size63|read22|cov11.67|target:TMPRSS2:ERG
 TMPRSS2:ERG,1,50,GGCGAGGGGCGGGGAGCGCCGCCTGGAGCGCGGCAGGAAGCCTTATCAGT,
@@ -360,17 +323,17 @@ SRR066437.2634544,55,23,TCACAACTGATAAGGCTTCCTGCCGCGCTCCAG,>>>>>>>>>>6>>>>>>>:>>6
 SRR066437.3918120,56,24,CTCACAACTGATAAGGCTTCCTGCCGCGCTCCA,::7::::::::::::::3:::'6::6:6:)30)
 SRR066437.2949061,57,25,ACTCACAACTGATAAGGCTTCCTGCCGCGCTCC,>>>>>>>>>>>>>>>>>>>>>>=:==:==730-
 SRR066437.1716315,60,28,CTCACTCACAACTGATAAGGCTTCCTGCCGCGC,>>>>>>>>>>>>>>>>>>>>>>=======730-
-</pre>
+
 In this order: read name, start coordinate, end coordinate, read sequence, ascii-encoded quality scores (if applicable)
 * end < start indicates read is on minus strand
 
 
-#### Understanding the modified .pileup file
+Understanding the modified .pileup file
 ---------------------------------------
 
 Refer to http://samtools.sourceforge.net/pileup.shtml
 for detailed information on this format
-<pre>
+
 e.g.
 (...)
 TMPRSS2:ERG     51      C       21      .............,,,,,,,, )-,0===:6>6>:>>>>>6>6
@@ -395,25 +358,24 @@ TMPRSS2:ERG     69      G       3       .., 00>
 TMPRSS2:ERG     70      T       3       .., -->
 TMPRSS2:ERG     71      G       1       , >
 TMPRSS2:ERG     72      A       1       , >
-</pre>
+
 "each line consists of chromosome (target name), 1-based coordinate, reference base, the number of reads covering the site, 
 read bases and base qualities. At the read base column, a dot stands for a match to the reference base on the forward strand, a comma for a match on the reverse strand, `ACGTN' for a mismatch on the forward strand and `acgtn' for a mismatch on the reverse strand."
 
 If applicable, ascii-encoded quality score follow the read base column.
 
-<pre>
 NOTES:
 *Read beginning and end aren't listed here.  Refer to .readposition to retrieve this information.
 ** "0" in the coverage column mean:
 -The target sequence isn't covered by any read (most likely scenario)
 -Although TASR extends the target sequences using a majority rule to determine the consensus sequence, individual reads that do not map with 100% sequence identity (over the whole read) to the consensus will influence the depth of coverage and cause the assembly to terminate.  The consensus is presented as-is.  *All reads that contributed to the assembly AND overlap *perfectly* the consensus will be listed in the .readposition and .pileup
 -If target sequences supplied (-s) are identical, both the .pileup and .readposition will comprise information that reflects this. i.e.  Though TASR does not assemble targets together, identical sequences provided as input will be listed as one having the base coverage consistent with the input. 
-</pre>
 
-### License <a name=license></a>
+
+License
 -------
 
-TASR Copyright (c) 2010-present BC Cancer.  All rights reserved.
+TASR Copyright (c) 2010-2016 Canada's Michael Smith Genome Science Centre.  All rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
